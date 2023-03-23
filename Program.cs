@@ -1,3 +1,4 @@
+using AA2ApiNet6.Mapper;
 using AA2ApiNET6._2_Domain.Infrastructure.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl;
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IDataBaseService, DataBaseService>();
 builder.Services.AddScoped<ISpecialistRepository, SpecialistRepository>();
 builder.Services.AddScoped<ISpecialistService, SpecialistService>();
+builder.Services.AddScoped<ISpecialistInputToDto, SpecialistInputToDto>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

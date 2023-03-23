@@ -1,4 +1,6 @@
-﻿using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
+﻿using AA2ApiNet6.Mapper;
+using AA2ApiNet6.Models;
+using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +13,13 @@ namespace AA2ApiNET6._1_Presentation.Controllers
     {
         private readonly ILogger<SpecialistController> _logger;
         private readonly ISpecialistService _specialistService;
+        private readonly ISpecialistInputToDto _specialistInputToDto;
 
-        public SpecialistController(ILogger<SpecialistController> logger, ISpecialistService specialistService)
+        public SpecialistController(ILogger<SpecialistController> logger, ISpecialistService specialistService, ISpecialistInputToDto specialistInputToDto)
         {
             _logger = logger;
             _specialistService = specialistService;
+            _specialistInputToDto = specialistInputToDto;
         }
 
         [HttpGet("getSpecialists")]
@@ -65,13 +69,14 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 return BadRequest();
             }
         }
-
         [HttpPost("add")]
-        public ActionResult AddSpecialist(SpecialistDto specialist)
+        public ActionResult AddSpecialist(SpecialistInputModel specialistInput)
         {
             try
             {
-                bool SpecialistStatus = _specialistService.AddSpecialistDto(specialist);
+                _logger.LogWarning($"Method AddSpecialist invoked.");
+                var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
+                bool SpecialistStatus = _specialistService.AddSpecialistDto(specialistDto);
                 if (SpecialistStatus)
                 {
                     return Ok("Specialist added");
@@ -79,6 +84,29 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 else
                 {
                     return BadRequest("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("deleteSpecialist")]
+        public ActionResult DeleteSpecialist(int id)
+        {
+            try
+            {
+                _logger.LogWarning($"Method deleteSpecialist invoked.");
+                var deletedSpecialist = _specialistService.DeleteSpecialistDto(id);
+                if (deletedSpecialist)
+                {
+                    return Ok("Specialist removed");
+                }
+                else
+                {
+                    return NotFound("This Specialist does not exist");
                 }
             }
             catch (Exception ex)
