@@ -35,7 +35,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 }
                 else
                 {
-                    return NoContent();
+                    return NotFound();
                 }
 
             }
@@ -114,6 +114,33 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 _logger.LogWarning(ex.Message);
                 return BadRequest();
             }
+        }
+
+        [HttpPut("updateSpecialist")]
+        public ActionResult UpdateSpecialist(int id, SpecialistInputModel specialistInput)
+        {
+            try
+            {
+                _logger.LogWarning("Method UpdateSpecialist invoked.");
+
+                var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
+
+                var specilaistUpdatedto = _specialistService.UpdateSpecialistDto(id, specialistDto);
+                if (specilaistUpdatedto.Id > 1)
+                {
+                    return Ok("Specilaist updated.");
+
+                }
+                else
+                {
+                    return NotFound();
+                }
+            } 
+            catch(Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest();
+            }   
         }
     }
 }

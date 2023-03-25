@@ -2,6 +2,7 @@
 using AA2ApiNET6._2_Domain.Infrastructure.Contracts.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
+using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper;
 
 namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
 {
@@ -9,11 +10,13 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
     {
         private readonly ILogger<SpecialistService> _logger;
         private readonly ISpecialistRepository _specialistRepository;
+        private readonly ISpecialistRepositoryModelToDto _specialistRepositoryModelToDto;
 
-        public SpecialistService(ILogger<SpecialistService> logger, ISpecialistRepository specialistRepository)
+        public SpecialistService(ILogger<SpecialistService> logger, ISpecialistRepository specialistRepository, ISpecialistRepositoryModelToDto specialistRepositoryModelToDto)
         {
             _logger = logger;
             _specialistRepository = specialistRepository;
+            _specialistRepositoryModelToDto = specialistRepositoryModelToDto;
         }
 
         public bool AddSpecialistDto(SpecialistDto specialistDto)
@@ -45,8 +48,8 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
         {
             try
             {
-                bool teacherdeleted = _specialistRepository.DeleteSpecialist(id);
-                if (teacherdeleted == true)
+                bool specialistDeleted = _specialistRepository.DeleteSpecialist(id);
+                if (specialistDeleted == true)
                 {
                     return true;
                 }
@@ -123,7 +126,6 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             try
             {
                 var specialistRepository = new SpecialistRepositoryModel();
-                specialistRepository.Id = specialistDto.Id;
                 specialistRepository.Name = specialistDto.Name;
                 specialistRepository.LastName = specialistDto.LastName;
                 specialistRepository.IsRetired = specialistDto.IsRetired;
@@ -133,15 +135,15 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                 specialistRepository.UserName = specialistDto.UserName;
                 specialistRepository.Password = specialistDto.Password;
 
-                var studentRepos = _specialistRepository.UpdateSpecialist(id, specialistRepository);
-
-                if (studentRepos == null)
+                var specialistRepos = _specialistRepository.UpdateSpecialist(id, specialistRepository);
+                var specilaistDtoChanged = _specialistRepositoryModelToDto.mapSpecialistRepositoryModelToDto(specialistRepos);
+                if (specilaistDtoChanged.Id < 1)
                 {
                     return new SpecialistDto();
                 }
                 else
                 {
-                    return specialistDto;
+                    return specilaistDtoChanged;
                 }
             }
             catch (Exception ex)

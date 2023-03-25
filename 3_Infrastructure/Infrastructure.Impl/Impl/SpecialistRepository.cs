@@ -107,7 +107,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             try
             {
                 var dbresponse = _dataBaseService.UpdateSpecialistDb(id, specialist);
-                if (dbresponse == null)
+                if (dbresponse.Id < 1)
                 {
                     return new SpecialistRepositoryModel();
                 }
