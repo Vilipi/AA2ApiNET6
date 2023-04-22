@@ -98,26 +98,26 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             }
         }
 
-        public List<SpecialistDto> GetSpecialistDtoList()
+        public List<SpecialistBasicInfo> GetSpecialistBasicInfoList()
         {
             try
             {
                 List<SpecialistRepositoryModel> specialistsRepository = _specialistRepository.GetSpecialists();
-                List<SpecialistDto> specilistsDto = MapSpecialistsRepositoryToSpecialistsDto(specialistsRepository);
-                if (specilistsDto.Count == 0)
+                List<SpecialistBasicInfo> specialistsBasicInfo = MapSpecialistsRepositoryToSpecialistsBasicInfoList(specialistsRepository);
+                if (specialistsBasicInfo.Count == 0)
                 {
-                    List<SpecialistDto> emptySpecilistsDto = new List<SpecialistDto>();
-                    return emptySpecilistsDto;
+                    List<SpecialistBasicInfo> emptySpecialistsBasicInfo = new List<SpecialistBasicInfo>();
+                    return emptySpecialistsBasicInfo;
                 }
                 else
                 {
-                    return specilistsDto;
+                    return specialistsBasicInfo;
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex.Message);
-                return new List<SpecialistDto>();
+                return new List<SpecialistBasicInfo>();
             }
         }
 
@@ -153,26 +153,20 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             }
         }
 
-        private List<SpecialistDto> MapSpecialistsRepositoryToSpecialistsDto(List<SpecialistRepositoryModel> specialistsRepository)
+        private List<SpecialistBasicInfo> MapSpecialistsRepositoryToSpecialistsBasicInfoList(List<SpecialistRepositoryModel> specialistsRepository)
         {
-            List<SpecialistDto> specialistsDto = new List<SpecialistDto>();
+            List<SpecialistBasicInfo> specialistsBasicInfo = new List<SpecialistBasicInfo>();
             specialistsRepository.ForEach(e =>
             {
-                var specialistDto = new SpecialistDto();
-                specialistDto.Id = e.Id;
-                specialistDto.Name = e.Name;
-                specialistDto.LastName = e.LastName;
-                specialistDto.IsRetired = e.IsRetired;
-                specialistDto.Rating = e.Rating;
-                specialistDto.BirthDate = e.BirthDate;
-                specialistDto.Speciality = e.Speciality;
-                specialistDto.UserName = e.UserName;
-                specialistDto.Password = e.Password;
+                var specialistBasicInfo = new SpecialistBasicInfo();
+                specialistBasicInfo.Id = e.Id;
+                specialistBasicInfo.Name = e.Name;
+                specialistBasicInfo.LastName = e.LastName;
+                specialistBasicInfo.Speciality = e.Speciality;
 
-
-                specialistsDto.Add(specialistDto);
+                specialistsBasicInfo.Add(specialistBasicInfo);
             });
-            return specialistsDto;
+            return specialistsBasicInfo;
         }
     }
 }

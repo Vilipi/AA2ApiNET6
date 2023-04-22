@@ -23,11 +23,11 @@ namespace AA2ApiNET6._1_Presentation.Controllers
         }
 
         [HttpGet("getSpecialists")]
-        public ActionResult<List<SpecialistDto>> GetSpecialists()
+        public ActionResult<List<SpecialistBasicInfo>> GetSpecialists()
         {
             try
             {
-                List<SpecialistDto> specialists = _specialistService.GetSpecialistDtoList();
+                List<SpecialistBasicInfo> specialists = _specialistService.GetSpecialistBasicInfoList();
                 if (specialists.Count > 0)
                 {
                     _logger.LogWarning("Method GetSpecialists invoked.");
@@ -47,7 +47,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
 
         }
 
-        [HttpGet("Getspecialist")]
+        [HttpGet("getSpecialist")]
         public ActionResult<SpecialistDto> GetSpecialist(int id)
         {
             try
@@ -69,6 +69,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 return BadRequest();
             }
         }
+
         [HttpPost("add")]
         public ActionResult AddSpecialist(SpecialistInputModel specialistInput)
         {
