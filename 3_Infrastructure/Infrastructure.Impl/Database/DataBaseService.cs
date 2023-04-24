@@ -20,8 +20,9 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             try
             {
                 var existingSpecialist = _dataContext.Specialists.Where(x => x.Id == specialist.Id).FirstOrDefault();
+                var existingSpecialistEmail = _dataContext.Specialists.Where(x => x.Email == specialist.Email).FirstOrDefault();
 
-                if (existingSpecialist != null)
+                if (existingSpecialist != null || existingSpecialistEmail != null)
                 {
                     return false;
                 }
@@ -101,8 +102,9 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             try
             {
                 SpecialistRepositoryModel updateSpecialistRepository = _dataContext.Specialists?.Where(e => e.Id == id).FirstOrDefault();
+                SpecialistRepositoryModel updateSpecialistRepositoryEmail = _dataContext.Specialists?.Where(e => e.Email == specialist.Email).FirstOrDefault();
 
-                if (updateSpecialistRepository == null)
+                if (updateSpecialistRepository == null || updateSpecialistRepository.Email != specialist.Email)
                 {
                     return new SpecialistRepositoryModel();
                 }
@@ -114,7 +116,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
                     updateSpecialistRepository.Rating = specialist.Rating;
                     updateSpecialistRepository.BirthDate = specialist.BirthDate;
                     updateSpecialistRepository.Speciality = specialist.Speciality;
-                    updateSpecialistRepository.UserName = specialist.UserName;
+                    updateSpecialistRepository.Email = specialist.Email;
                     updateSpecialistRepository.Password = specialist.Password;
 
                     _dataContext.SaveChanges();

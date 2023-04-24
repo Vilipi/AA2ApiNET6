@@ -1,4 +1,5 @@
 using AA2ApiNet6.Mapper;
+using AA2ApiNET6._1_Presentation.Handler;
 using AA2ApiNET6._2_Domain.Infrastructure.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl;
@@ -6,6 +7,7 @@ using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper;
 using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data;
 using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database;
 using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -24,6 +26,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//AUTH
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 //SQL
 builder.Services.AddDbContext<DataContext>(options =>
@@ -47,6 +53,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication(); // AUTH
 
 app.UseAuthorization();
 

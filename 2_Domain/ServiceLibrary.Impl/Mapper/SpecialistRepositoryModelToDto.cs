@@ -23,7 +23,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper
                 specialistDto.Rating = repositoryModel.Rating;
                 specialistDto.BirthDate = repositoryModel.BirthDate;
                 specialistDto.Speciality = repositoryModel.Speciality;
-                specialistDto.UserName = repositoryModel.UserName;
+                specialistDto.Email = repositoryModel.Email;
                 specialistDto.Password = repositoryModel.Password;
 
                 return specialistDto;

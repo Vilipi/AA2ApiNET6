@@ -24,7 +24,7 @@ namespace AA2ApiNet6.Mapper
                 specialistDto.Rating = input.Rating.Contains('.') ? decimal.Parse(input.Rating.Replace('.', ',')) : decimal.Parse(input.Rating);
                 specialistDto.BirthDate = DateTime.Parse(input.BirthDate);
                 specialistDto.Speciality = input.Speciality;
-                specialistDto.UserName = input.UserName;
+                specialistDto.Email = input.Email;
                 specialistDto.Password = input.Password;
 
                 return specialistDto;

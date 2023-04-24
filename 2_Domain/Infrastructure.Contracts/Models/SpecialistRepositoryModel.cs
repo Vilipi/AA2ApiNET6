@@ -12,7 +12,7 @@ namespace AA2ApiNET6._2_Domain.Infrastructure.Contracts.Models
         public decimal Rating { get; set; }
         public DateTime BirthDate { get; set; }
         public string Speciality { get; set; }
-        public string UserName { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }

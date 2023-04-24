@@ -29,7 +29,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             specialistRepository.Rating = specialistDto.Rating;
             specialistRepository.BirthDate = specialistDto.BirthDate;
             specialistRepository.Speciality = specialistDto.Speciality;
-            specialistRepository.UserName = specialistDto.UserName;
+            specialistRepository.Email = specialistDto.Email;
             specialistRepository.Password = specialistDto.Password;
 
             bool specialistAdded = _specialistRepository.AddSpecialist(specialistRepository);
@@ -85,7 +85,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                     SpecialistDto.Rating = singleSpecialistRepository.Rating;
                     SpecialistDto.BirthDate = singleSpecialistRepository.BirthDate;
                     SpecialistDto.Speciality = singleSpecialistRepository.Speciality;
-                    SpecialistDto.UserName = singleSpecialistRepository.UserName;
+                    SpecialistDto.Email = singleSpecialistRepository.Email;
                     SpecialistDto.Password = singleSpecialistRepository.Password;
 
                     return SpecialistDto;
@@ -132,7 +132,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                 specialistRepository.Rating = specialistDto.Rating;
                 specialistRepository.BirthDate = specialistDto.BirthDate;
                 specialistRepository.Speciality = specialistDto.Speciality;
-                specialistRepository.UserName = specialistDto.UserName;
+                specialistRepository.Email = specialistDto.Email;
                 specialistRepository.Password = specialistDto.Password;
 
                 var specialistRepos = _specialistRepository.UpdateSpecialist(id, specialistRepository);

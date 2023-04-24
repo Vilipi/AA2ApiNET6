@@ -16,6 +16,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             _dataBaseService = dataBaseService;
         }
 
+
         public bool AddSpecialist(SpecialistRepositoryModel specialist)
         {
             try

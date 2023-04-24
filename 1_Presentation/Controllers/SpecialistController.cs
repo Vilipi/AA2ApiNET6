@@ -2,12 +2,18 @@
 using AA2ApiNet6.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AA2ApiNET6._1_Presentation.Controllers
 {
-    [Route("api/[controller]")]
+
+    //add-migration migration1
+    //update-database
+
+
+    [Route("aa2")]
     [ApiController]
     public class SpecialistController : ControllerBase
     {
@@ -22,7 +28,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             _specialistInputToDto = specialistInputToDto;
         }
 
-        [HttpGet("getSpecialists")]
+        [HttpGet("Specialists")]
         public ActionResult<List<SpecialistBasicInfo>> GetSpecialists()
         {
             try
@@ -47,21 +53,30 @@ namespace AA2ApiNET6._1_Presentation.Controllers
 
         }
 
-        [HttpGet("getSpecialist")]
+        [Authorize]
+        [HttpGet("Specialist/{id}")]
         public ActionResult<SpecialistDto> GetSpecialist(int id)
         {
             try
             {
-                SpecialistDto specialistDto = _specialistService.GetSpecialistDto(id);
-                if (specialistDto == null)
+                string specialistIdValidated = HttpContext.User.Identity.Name;
+
+                if(id == Int32.Parse(specialistIdValidated))
                 {
-                    return BadRequest("Error");
+                    SpecialistDto specialistDto = _specialistService.GetSpecialistDto(id);
+                    if (specialistDto == null || specialistDto.Name == null)
+                    {
+                        return BadRequest("Error");
+                    }
+                    else
+                    {
+                        return Ok(specialistDto);
+                    }
                 }
                 else
                 {
-                    return Ok(specialistDto);
+                    return BadRequest("Error");
                 }
-
             }
             catch (Exception ex)
             {
@@ -70,7 +85,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [HttpPost("add")]
+        [HttpPost("/AUTH/REGISTER")]
         public ActionResult AddSpecialist(SpecialistInputModel specialistInput)
         {
             try
@@ -94,21 +109,32 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [HttpDelete("deleteSpecialist")]
+        [Authorize]
+        [HttpDelete("Specialist/{id}")]
         public ActionResult DeleteSpecialist(int id)
         {
             try
             {
                 _logger.LogWarning($"Method deleteSpecialist invoked.");
-                var deletedSpecialist = _specialistService.DeleteSpecialistDto(id);
-                if (deletedSpecialist)
+
+                string specialistIdValidated = HttpContext.User.Identity.Name;
+                if (id == Int32.Parse(specialistIdValidated))
                 {
-                    return Ok("Specialist removed");
-                }
-                else
+                    var deletedSpecialist = _specialistService.DeleteSpecialistDto(id);
+                    if (deletedSpecialist)
+                    {
+                        return Ok("Specialist removed");
+                    }
+                    else
+                    {
+                        return NotFound("This Specialist does not exist");
+                    }
+                } else
                 {
-                    return NotFound("This Specialist does not exist");
+                    return BadRequest("Error");
                 }
+
+                
             }
             catch (Exception ex)
             {
@@ -117,25 +143,34 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [HttpPut("updateSpecialist")]
+        [Authorize]
+        [HttpPut("Specialist/{id}")]
         public ActionResult UpdateSpecialist(int id, SpecialistInputModel specialistInput)
         {
             try
             {
                 _logger.LogWarning("Method UpdateSpecialist invoked.");
 
-                var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
-
-                var specilaistUpdatedto = _specialistService.UpdateSpecialistDto(id, specialistDto);
-                if (specilaistUpdatedto.Id > 1)
+                string specialistIdValidated = HttpContext.User.Identity.Name;
+                if (id == Int32.Parse(specialistIdValidated))
                 {
-                    return Ok("Specilaist updated.");
+                    var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
 
-                }
-                else
+                    var specilaistUpdatedto = _specialistService.UpdateSpecialistDto(id, specialistDto);
+                    if (specilaistUpdatedto.Id > 1)
+                    {
+                        return Ok("Specilaist updated.");
+
+                    }
+                    else
+                    {
+                        return BadRequest("Error");
+                    }
+                } else 
                 {
-                    return NotFound();
+                    return BadRequest("Error");
                 }
+                
             } 
             catch(Exception ex)
             {
