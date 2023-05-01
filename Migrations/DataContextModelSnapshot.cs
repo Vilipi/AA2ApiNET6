@@ -33,6 +33,10 @@ namespace AA2ApiNET6.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsRetired")
                         .HasColumnType("bit");
 
@@ -52,10 +56,6 @@ namespace AA2ApiNET6.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Speciality")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

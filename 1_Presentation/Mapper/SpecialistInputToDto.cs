@@ -2,6 +2,7 @@
 using AA2ApiNET6._1_Presentation.Controllers;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace AA2ApiNet6.Mapper
 {
@@ -17,6 +18,11 @@ namespace AA2ApiNet6.Mapper
         {
             try
             {
+                if (!new EmailAddressAttribute().IsValid(input.Email))
+                {
+                    return new SpecialistDto();
+                }
+
                 var specialistDto = new SpecialistDto();
                 specialistDto.Name = input.Name;
                 specialistDto.LastName = input.LastName;
@@ -24,7 +30,7 @@ namespace AA2ApiNet6.Mapper
                 specialistDto.Rating = input.Rating.Contains('.') ? decimal.Parse(input.Rating.Replace('.', ',')) : decimal.Parse(input.Rating);
                 specialistDto.BirthDate = DateTime.Parse(input.BirthDate);
                 specialistDto.Speciality = input.Speciality;
-                specialistDto.UserName = input.UserName;
+                specialistDto.Email = input.Email;
                 specialistDto.Password = input.Password;
 
                 return specialistDto;
