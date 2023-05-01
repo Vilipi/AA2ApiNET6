@@ -104,12 +104,13 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
                 SpecialistRepositoryModel updateSpecialistRepository = _dataContext.Specialists?.Where(e => e.Id == id).FirstOrDefault();
                 SpecialistRepositoryModel updateSpecialistRepositoryEmail = _dataContext.Specialists?.Where(e => e.Email == specialist.Email).FirstOrDefault();
 
-                if (updateSpecialistRepository == null || updateSpecialistRepository.Email != specialist.Email)
+                if (updateSpecialistRepository.Id == null || updateSpecialistRepositoryEmail != null && updateSpecialistRepositoryEmail.Id != updateSpecialistRepository.Id)
                 {
                     return new SpecialistRepositoryModel();
                 }
                 else
                 {
+                    updateSpecialistRepository.Id= id;
                     updateSpecialistRepository.Name = specialist.Name;
                     updateSpecialistRepository.LastName = specialist.LastName;
                     updateSpecialistRepository.IsRetired = specialist.IsRetired;

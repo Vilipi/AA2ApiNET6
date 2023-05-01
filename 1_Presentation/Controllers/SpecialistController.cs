@@ -53,7 +53,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
 
         }
 
-        [Authorize]
+        [Authorize] //Basic ZGVtbzFAZGVtby5jb206ZGVtbzE=  coge email:password
         [HttpGet("Specialist/{id}")]
         public ActionResult<SpecialistDto> GetSpecialist(int id)
         {
@@ -145,7 +145,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
 
         [Authorize]
         [HttpPut("Specialist/{id}")]
-        public ActionResult UpdateSpecialist(int id, SpecialistInputModel specialistInput)
+        public ActionResult UpdateSpecialist(int id, SpecialistInputModel specialistInput) 
         {
             try
             {
