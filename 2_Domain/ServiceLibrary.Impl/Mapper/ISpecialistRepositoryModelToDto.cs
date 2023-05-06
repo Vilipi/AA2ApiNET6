@@ -9,4 +9,3 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper
             SpecialistDto mapSpecialistRepositoryModelToDto(SpecialistRepositoryModel repositorymodel);
     }
 }
-

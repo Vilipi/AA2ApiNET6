@@ -5,6 +5,8 @@ using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Runtime.Intrinsics.X86;
 
 namespace AA2ApiNET6._1_Presentation.Controllers
 {
@@ -12,6 +14,9 @@ namespace AA2ApiNET6._1_Presentation.Controllers
     //add-migration migration1
     //update-database
 
+    //USE master;
+    //ALTER DATABASE[aa2PRE] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    //DROP DATABASE[aa2PRE];
 
     [Route("aa2")]
     [ApiController]
@@ -85,7 +90,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [HttpPost("/AUTH/REGISTER")]
+        [HttpPost("/Specialist/AUTH/REGISTER")]
         public ActionResult AddSpecialist(SpecialistInputModel specialistInput)
         {
             try

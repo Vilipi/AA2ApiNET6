@@ -4,23 +4,23 @@ using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data;
 
 namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
 {
-    public class SpecialistRepository : ISpecialistRepository
+    public class PatientRepository : IPatientRepository
     {
-        private readonly ILogger<SpecialistRepository> _logger;
+        private readonly ILogger<PatientRepository> _logger;
 
         private readonly IDataBaseService _dataBaseService;
 
-        public SpecialistRepository(ILogger<SpecialistRepository> logger, IDataBaseService dataBaseService)
+        public PatientRepository(ILogger<PatientRepository> logger, IDataBaseService dataBaseService)
         {
             _logger = logger;
             _dataBaseService = dataBaseService;
         }
 
-        public bool AddSpecialist(SpecialistRepositoryModel specialist)
+        public bool AddPatient(PatientRepositoryModel patient)
         {
             try
             {
-                var dbresponse = _dataBaseService.AddSpecialistDb(specialist);
+                var dbresponse = _dataBaseService.AddPatienttDb(patient);
                 if (dbresponse == true)
                 {
                     return true;
@@ -37,11 +37,11 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             }
         }
 
-        public bool DeleteSpecialist(int id)
+        public bool DeletePatient(int id)
         {
             try
             {
-                var dbresponse = _dataBaseService.DeleteSpecialistDb(id);
+                var dbresponse = _dataBaseService.DeletePatientDb(id);
                 if (dbresponse == true)
                 {
                     return true;
@@ -58,15 +58,15 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             }
         }
 
-        public List<SpecialistRepositoryModel> GetSpecialists()
+        public List<PatientRepositoryModel> GetPatients()
         {
             try
             {
-                var dbresponse = _dataBaseService.GetSPecialistsDb();
+                var dbresponse = _dataBaseService.GetPatientsDb();
 
                 if (dbresponse.Count == 0)
                 {
-                    return new List<SpecialistRepositoryModel>();
+                    return new List<PatientRepositoryModel>();
                 }
                 else
                 {
@@ -76,19 +76,19 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             catch (Exception ex)
             {
                 _logger.LogWarning(ex.Message);
-                return new List<SpecialistRepositoryModel>();
+                return new List<PatientRepositoryModel>();
             }
         }
 
-        public SpecialistRepositoryModel GetSingleSpecialist(int id)
+        public PatientRepositoryModel GetSinglePatient(int id)
         {
             try
             {
-                var dbresponse = _dataBaseService.GetSingleSpecialistDb(id);
+                var dbresponse = _dataBaseService.GetSinglePatientDb(id);
 
                 if (dbresponse == null)
                 {
-                    return new SpecialistRepositoryModel();
+                    return new PatientRepositoryModel();
                 }
                 else
                 {
@@ -98,18 +98,18 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             catch (Exception ex)
             {
                 _logger.LogWarning(ex.Message);
-                return new SpecialistRepositoryModel();
+                return new PatientRepositoryModel();
             }
         }
 
-        public SpecialistRepositoryModel UpdateSpecialist(int id, SpecialistRepositoryModel specialist)
+        public PatientRepositoryModel UpdatePatient(int id, PatientRepositoryModel patient)
         {
             try
             {
-                var dbresponse = _dataBaseService.UpdateSpecialistDb(id, specialist);
+                var dbresponse = _dataBaseService.UpdatePatientDb(id, patient);
                 if (dbresponse.Id < 1)
                 {
-                    return new SpecialistRepositoryModel();
+                    return new PatientRepositoryModel();
                 }
                 else
                 {
@@ -119,7 +119,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             catch (Exception ex)
             {
                 _logger.LogWarning(ex.Message);
-                return new SpecialistRepositoryModel();
+                return new PatientRepositoryModel();
 
             }
         }
