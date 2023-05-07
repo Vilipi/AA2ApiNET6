@@ -39,9 +39,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
-//SQL
+//InMemory
 builder.Services.AddDbContext<DataContext>(options =>
-          options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseInMemoryDatabase("DefaultConnection"));
+
+
 
 // NLOG
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -68,15 +70,15 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<DataContext>();
-    if (context.Database.GetPendingMigrations().Any())
-    {
-        context.Database.Migrate();
-    }
-}
+//    var context = services.GetRequiredService<DataContext>();
+//    if (context.Database.GetPendingMigrations().Any())
+//    {
+//        context.Database.Migrate();
+//    }
+//}
 
 app.Run();

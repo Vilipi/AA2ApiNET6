@@ -5,7 +5,18 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        protected readonly IConfiguration Configuration;
+
+        public DataContext(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            // in memory database used for simplicity, change to a real db for production applications
+            options.UseInMemoryDatabase("TestDb");
+        }
 
         public DbSet<SpecialistRepositoryModel>? Specialists { get; set; }
         public DbSet<PatientRepositoryModel>? Patients { get; set; }
