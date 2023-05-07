@@ -9,6 +9,8 @@ services:
           - "5505:80"
         depends_on:
           - db
+        volumes:
+          - ./logs
 
     db:
         image: "mcr.microsoft.com/mssql/server:2022-latest"
