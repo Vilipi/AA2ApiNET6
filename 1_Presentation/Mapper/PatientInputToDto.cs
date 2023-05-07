@@ -51,11 +51,11 @@ namespace AA2ApiNET6._1_Presentation.Mapper
 
             if (age < 18)
             {
-                return false;
+                return true;
             }
             else
             {
-                return true;
+                return false;
             }
         }
     }

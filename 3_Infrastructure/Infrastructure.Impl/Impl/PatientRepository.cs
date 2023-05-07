@@ -123,5 +123,72 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
 
             }
         }
+
+        
+        //Appointments
+        public bool AddAppointment(int id, string specility)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.AddAppointmentDb(id, specility);
+                if (dbresponse == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        public List<AppointmentRepositoryModel> GetAppointmentsRepository(int id)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.GetAppointmentsPatientDb(id);
+
+                if (dbresponse.Count == 0)
+                {
+                    return new List<AppointmentRepositoryModel>();
+                }
+                else
+                {
+                    return dbresponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentRepositoryModel>();
+            }
+        }
+
+        public AppointmentRepositoryModel GetAppointmentRepository(int idPatient, int idAppointment)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.GetSingleAppointmentPatientDb(idPatient, idAppointment);
+
+                if (dbresponse.Id == 0)
+                {
+                    return new AppointmentRepositoryModel();
+                }
+                else
+                {
+                    return dbresponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentRepositoryModel();
+            }
+        }
     }
 }

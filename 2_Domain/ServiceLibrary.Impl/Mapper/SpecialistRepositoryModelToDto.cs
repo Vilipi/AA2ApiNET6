@@ -34,5 +34,26 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper
                 return new SpecialistDto();
             }
         }
+
+        public AppointmentDto mapAppointmentRepositoryModelToDto(AppointmentRepositoryModel Appointment)
+        {
+            try
+            {
+                var appointmentDto = new AppointmentDto();
+                appointmentDto.Id = Appointment.Id;
+                appointmentDto.Name = Appointment.Name;
+                appointmentDto.AppointmentCreationDate = Appointment.AppointmentCreationDate;
+                appointmentDto.Price = Appointment.Price;
+                appointmentDto.SpecialistComment = Appointment.SpecialistComment;
+                appointmentDto.IsCompleted = Appointment.IsCompleted;
+                return appointmentDto;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentDto();
+            }
+        }
+
     }
 }

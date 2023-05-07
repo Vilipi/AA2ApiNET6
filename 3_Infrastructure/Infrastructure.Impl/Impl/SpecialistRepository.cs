@@ -123,5 +123,74 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
 
             }
         }
+
+        //Appointments
+        public List<AppointmentRepositoryModel> GetAppointmentsRepository(int id)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.GetAppointmentsSpecialistDb(id);
+
+                if (dbresponse.Count == 0)
+                {
+                    return new List<AppointmentRepositoryModel>();
+                }
+                else
+                {
+                    return dbresponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentRepositoryModel>();
+            }
+        }
+
+        public bool DeleteAppointment(int idSpecialist, int idAppointment)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.DeleteAppointmentDb(idSpecialist, idAppointment);
+                if (dbresponse)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        public AppointmentRepositoryModel UpdateAppointment(int idSpecialist, int idAppointment, AppointmentRepositoryModel appointmentRepository)
+        {
+            try
+            {
+                var dbresponse = _dataBaseService.UpdateAppointmentDb(idSpecialist, idAppointment, appointmentRepository);
+                if (dbresponse.Id < 1)
+                {
+                    return new AppointmentRepositoryModel();
+                }
+                else
+                {
+                    return dbresponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentRepositoryModel();
+
+            }
+        }
+
     }
 }
+
+

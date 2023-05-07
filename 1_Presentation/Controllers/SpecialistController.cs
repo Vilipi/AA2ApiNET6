@@ -1,7 +1,9 @@
 ﻿using AA2ApiNet6.Mapper;
 using AA2ApiNet6.Models;
+using AA2ApiNET6._1_Presentation.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
+using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +35,12 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             _specialistInputToDto = specialistInputToDto;
         }
 
-        [HttpGet("Specialists")]
-        public ActionResult<List<SpecialistBasicInfo>> GetSpecialists()
+        [HttpGet("Specialists/{param}/{order}")]
+        public ActionResult<List<SpecialistBasicInfo>> GetSpecialists(string? param, string? order)
         {
             try
             {
-                List<SpecialistBasicInfo> specialists = _specialistService.GetSpecialistBasicInfoList();
+                List<SpecialistBasicInfo> specialists = _specialistService.GetSpecialistBasicInfoList(param, order);
                 if (specialists.Count > 0)
                 {
                     _logger.LogWarning("Method GetSpecialists invoked.");
@@ -48,30 +50,33 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 {
                     return NotFound();
                 }
-
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex.Message);
                 return BadRequest();
             }
-
         }
 
-        [Authorize] //Basic ZGVtbzFAZGVtby5jb206ZGVtbzE=  coge email:password
+        [Authorize] // admin and specialist  => Basic ZGVtbzFAZGVtby5jb206ZGVtbzE=   email:password
         [HttpGet("Specialist/{id}")]
         public ActionResult<SpecialistDto> GetSpecialist(int id)
         {
             try
             {
-                string specialistIdValidated = HttpContext.User.Identity.Name;
+                string specialistdValidated = HttpContext.User.Identity.Name;
+                int intSpecialistValidated = 0;
+                if (specialistdValidated != "admin")
+                {
+                    intSpecialistValidated = Int32.Parse(specialistdValidated);
+                }
 
-                if(id == Int32.Parse(specialistIdValidated))
+                if (id == intSpecialistValidated || specialistdValidated == "admin")
                 {
                     SpecialistDto specialistDto = _specialistService.GetSpecialistDto(id);
                     if (specialistDto == null || specialistDto.Name == null)
                     {
-                        return BadRequest("Error");
+                        return NotFound();
                     }
                     else
                     {
@@ -114,7 +119,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize] // admin and specialist
         [HttpDelete("Specialist/{id}")]
         public ActionResult DeleteSpecialist(int id)
         {
@@ -122,8 +127,14 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             {
                 _logger.LogWarning($"Method deleteSpecialist invoked.");
 
-                string specialistIdValidated = HttpContext.User.Identity.Name;
-                if (id == Int32.Parse(specialistIdValidated))
+                string specialistdValidated = HttpContext.User.Identity.Name;
+                int intSpecialistValidated = 0;
+                if (specialistdValidated != "admin")
+                {
+                    intSpecialistValidated = Int32.Parse(specialistdValidated);
+                }
+
+                if (id == intSpecialistValidated || specialistdValidated == "admin")
                 {
                     var deletedSpecialist = _specialistService.DeleteSpecialistDto(id);
                     if (deletedSpecialist)
@@ -137,9 +148,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 } else
                 {
                     return BadRequest("Error");
-                }
-
-                
+                } 
             }
             catch (Exception ex)
             {
@@ -148,7 +157,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize] // specialist
         [HttpPut("Specialist/{id}")]
         public ActionResult UpdateSpecialist(int id, SpecialistInputModel specialistInput) 
         {
@@ -162,9 +171,9 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                     var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
 
                     var specilaistUpdatedto = _specialistService.UpdateSpecialistDto(id, specialistDto);
-                    if (specilaistUpdatedto.Id > 1)
+                    if (specilaistUpdatedto.Id >= 1)
                     {
-                        return Ok("Specilaist updated.");
+                        return Ok("Specialist updated.");
 
                     }
                     else
@@ -175,13 +184,128 @@ namespace AA2ApiNET6._1_Presentation.Controllers
                 {
                     return BadRequest("Error");
                 }
-                
             } 
             catch(Exception ex)
             {
                 _logger.LogWarning(ex.Message);
                 return BadRequest();
             }   
+        }
+
+        //Appointments
+        [Authorize] //admin and specialist
+        [HttpGet("Specialist/{id}/Appointments")]
+        public ActionResult<List<AppointmentDto>> GetAppointments(int id)
+        {
+            try
+            {
+                _logger.LogWarning("Method GetAppointments invoked.");
+
+                string patientIdValidated = HttpContext.User.Identity.Name;
+                int intPatientIdValidated = 0;
+                if (patientIdValidated != "admin")
+                {
+                    intPatientIdValidated = Int32.Parse(patientIdValidated);
+                }
+
+                if (id == intPatientIdValidated || patientIdValidated == "admin")
+                {
+                    List<AppointmentDto> appointments = _specialistService.GetAppointmentsDto(id);
+                    if (appointments.Count > 0)
+                    {
+                        return Ok(appointments);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [Authorize] // admin and specialist
+        [HttpDelete("Specialist/{idSpecialist}/Appointment/{idAppointment}")]
+        public ActionResult DeleteAppointment(int idSpecialist, int idAppointment)
+        {
+            try
+            {
+                _logger.LogWarning($"Method DeleteAppointment invoked.");
+
+                string specialistdValidated = HttpContext.User.Identity.Name;
+                int intSpecialistValidated = 0;
+                if (specialistdValidated != "admin")
+                {
+                    intSpecialistValidated = Int32.Parse(specialistdValidated);
+                }
+
+                if (idSpecialist == intSpecialistValidated || specialistdValidated == "admin")
+                {
+                    var deletedAppoinment = _specialistService.DeleteAppointment(idSpecialist, idAppointment);
+                    if (deletedAppoinment)
+                    {
+                        return Ok("Appoinment removed");
+                    }
+                    else
+                    {
+                        return NotFound("This Appoinment does not exist");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [Authorize] // specialist
+        [HttpPut("Specialist/{idSpecialist}/Appointment/{idAppointment}")]
+        public ActionResult UpdateAppointment(int idSpecialist, int idAppointment, AppointmentInputModel specialistInput)
+        {
+            try
+            {
+                _logger.LogWarning("Method UpdateAppointment invoked.");
+
+                string specialistIdValidated = HttpContext.User.Identity.Name;
+                if (idSpecialist == Int32.Parse(specialistIdValidated))
+                {
+                    var appointmentDTO = _specialistInputToDto.mapAppointmentInputToDto(specialistInput);
+                    var appointmentUpdateDto = _specialistService.UpdateAppointmentDto(idSpecialist, idAppointment, appointmentDTO);
+
+                    
+                    if (appointmentUpdateDto.Id > 1)
+                    {
+                        return Ok("Appointment updated.");
+
+                    }
+                    else
+                    {
+                        return BadRequest("Error");
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return BadRequest();
+            }
         }
     }
 }

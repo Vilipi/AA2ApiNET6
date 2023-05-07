@@ -46,14 +46,14 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
         {
             try
             {
-                SpecialistRepositoryModel deleteSpecialistRepository = _dataContext.Specialists.Where(e => e.Id == id).FirstOrDefault();
-                if (deleteSpecialistRepository == null)
+                var deletePatientRepository = _dataContext.Specialists.Where(e => e.Id == id).FirstOrDefault();
+                if (deletePatientRepository == null)
                 {
                     return false;
                 }
                 else
                 {
-                    _dataContext.Specialists.Remove(deleteSpecialistRepository);
+                    deletePatientRepository.IsRetired = true;
                     _dataContext.SaveChanges();
                     return true;
                 }
@@ -249,19 +249,30 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
 
         
         //Appointment
-        public bool AddAppointmentDb(AppointmentRepositoryModel appointment)
+        public bool AddAppointmentDb(int id, string specility)
         {
             try
             {
-                var existingAppointment = _dataContext.Patients.Where(x => x.Id == appointment.Id).FirstOrDefault();
+                var existingSpecility = _dataContext.Specialists?.Where(x => x.Speciality == specility).FirstOrDefault();
+                var singlePatientRepository = _dataContext.Patients?.Where(e => e.Id == id).FirstOrDefault();
 
-                if (existingAppointment != null)
+                if (existingSpecility == null || existingSpecility.Name == "admin" && singlePatientRepository == null)
                 {
                     return false;
                 }
                 else
                 {
-                    _dataContext.Appointments.Add(appointment);
+                    var newAppointment = new AppointmentRepositoryModel();
+                    newAppointment.Name = $"Appointment-{specility}-{DateTime.Now.ToString("dd/MM/yy")}";
+                    newAppointment.AppointmentCreationDate = DateTime.Now;
+                    newAppointment.IsCompleted = false;
+                    newAppointment.Price = 50; //inicial
+                    newAppointment.SpecialistComment = "";
+                    newAppointment.Specialist = existingSpecility;
+                    newAppointment.Patient = singlePatientRepository;
+
+
+                    _dataContext.Appointments.Add(newAppointment);
                     _dataContext.SaveChanges();
                     return true;
                 }
@@ -272,11 +283,59 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
                 return false;
             }
         }
-        public bool DeleteAppointmentDb(int id)
+
+        public List<AppointmentRepositoryModel> GetAppointmentsPatientDb(int id)
         {
             try
             {
-                var deleteAppointmentRepository = _dataContext.Appointments.Where(e => e.Id == id).FirstOrDefault();
+                return _dataContext.Appointments.Where(e => e.Patient.Id == id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentRepositoryModel>();
+            }
+        }
+
+        public AppointmentRepositoryModel GetSingleAppointmentPatientDb(int idPatient, int idAppointment)
+        {
+            try
+            {
+                var singleAppointmentRepository = _dataContext.Appointments?.Where(e => e.Id == idAppointment && e.Patient.Id == idPatient).FirstOrDefault();
+                if (singleAppointmentRepository == null)
+                {
+                    return new AppointmentRepositoryModel();
+                }
+                else
+                {
+                    return singleAppointmentRepository;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentRepositoryModel();
+            }
+        }
+
+        public List<AppointmentRepositoryModel> GetAppointmentsSpecialistDb(int id)
+        {
+            try
+            {
+                return _dataContext.Appointments.Where(e => e.Specialist.Id == id).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentRepositoryModel>();
+            }
+        }
+
+        public bool DeleteAppointmentDb(int idSpecialist, int idAppointment)
+        {
+            try
+            {
+                var deleteAppointmentRepository = _dataContext.Appointments.Where(e => e.Id == idAppointment && e.Specialist.Id == idSpecialist).FirstOrDefault();
                 if (deleteAppointmentRepository == null)
                 {
                     return false;
@@ -294,60 +353,24 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
                 return false;
             }
         }
-        public AppointmentRepositoryModel GetSingleAppointmentDb(int id)
+
+        public AppointmentRepositoryModel UpdateAppointmentDb(int idSpecialist, int idAppointment, AppointmentRepositoryModel appointment)
         {
             try
             {
-                var singleAppointmentRepository = _dataContext.Appointments?.Where(e => e.Id == id).FirstOrDefault();
-                if (singleAppointmentRepository == null)
+                AppointmentRepositoryModel updateAppointmentRepository = _dataContext.Appointments?.Where(e => e.Id == idAppointment && e.Specialist.Id == idSpecialist).FirstOrDefault();
+
+                if (updateAppointmentRepository.Id == null)
                 {
                     return new AppointmentRepositoryModel();
                 }
                 else
                 {
-                    return singleAppointmentRepository;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex.Message);
-                return new AppointmentRepositoryModel();
-            }
-        }
-        public List<AppointmentRepositoryModel> GetAppointmentsDb()
-        {
-            try
-            {
-                return _dataContext.Appointments.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex.Message);
-                return new List<AppointmentRepositoryModel>();
-            }
-        }
-
-        public AppointmentRepositoryModel UpdateAppointmentDb(int id, AppointmentRepositoryModel appointment)
-        {
-            try
-            {
-                AppointmentRepositoryModel updatePatientRepository = _dataContext.Appointments?.Where(e => e.Id == id).FirstOrDefault();
-
-                if (updatePatientRepository.Id == null)
-                {
-                    return new AppointmentRepositoryModel();
-                }
-                else
-                {
-                    updatePatientRepository.Id = id;
-                    updatePatientRepository.Name = appointment.Name;
-                    updatePatientRepository.AppointmentCreationDate = appointment.AppointmentCreationDate;
-                    updatePatientRepository.IsCompleted = appointment.IsCompleted;
-                    updatePatientRepository.Price = appointment.Price;
-                    updatePatientRepository.SpecialistComment = appointment.SpecialistComment;
+                    updateAppointmentRepository.SpecialistComment = appointment.SpecialistComment;
+                    updateAppointmentRepository.Price = appointment.Price;
 
                     _dataContext.SaveChanges();
-                    return updatePatientRepository;
+                    return updateAppointmentRepository;
                 }
             }
             catch (Exception ex)

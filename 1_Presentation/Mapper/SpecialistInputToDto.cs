@@ -1,5 +1,6 @@
 ﻿using AA2ApiNet6.Models;
 using AA2ApiNET6._1_Presentation.Controllers;
+using AA2ApiNET6._1_Presentation.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
 using System.ComponentModel.DataAnnotations;
@@ -39,8 +40,25 @@ namespace AA2ApiNet6.Mapper
             {
                 _logger.LogWarning(ex.Message);
                 return new SpecialistDto();
-
             }
         }
+
+        public AppointmentDto mapAppointmentInputToDto(AppointmentInputModel appointmentInputModel)
+        {
+            try
+            {
+                var inputDto = new AppointmentDto();
+                inputDto.Price = appointmentInputModel.Price.Contains('.') ? decimal.Parse(appointmentInputModel.Price.Replace('.', ',')) : decimal.Parse(appointmentInputModel.Price); ;
+                inputDto.SpecialistComment = appointmentInputModel.Comment;
+                return inputDto;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentDto();
+            }
+
+        }
+
     }
 }

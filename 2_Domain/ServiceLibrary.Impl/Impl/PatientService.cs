@@ -91,7 +91,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             }
         }
 
-        public List<PatientDto> GetPatientsDto()
+        public List<PatientDto> GetPatientsDto(string param, string order)
         {
             try
             {
@@ -109,7 +109,29 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                         var patientDto = _patientRepositoryModelToDto.mapPatientRepositoryModelToDto(patient);
                         patientsDto.Add(patientDto);
                     }
-                    return patientsDto;
+
+                    if (param == null || order == null)
+                    {
+                        return patientsDto;
+                    }
+                    var prop = typeof(SpecialistBasicInfo).GetProperty(param);
+                    if (prop == null)
+                    {
+                        return patientsDto;
+                    }
+                    else
+                    {
+                        if (order == "ASC")
+                        {
+                            var orderListASC = patientsDto.OrderBy(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
+                            return orderListASC;
+                        }
+                        else
+                        {
+                            var orderListDESC = patientsDto.OrderByDescending(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
+                            return orderListDESC;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -150,5 +172,95 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                 return new PatientDto();
             }
         }
+
+        public bool AddAppointment(int id, string speciality)
+        {
+            try
+            {
+                var newAppointment = _patientRepository.AddAppointment(id, speciality);
+
+                if (newAppointment == false)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        public List<AppointmentDto> GetAppointmentsDto(int id)
+        {
+            try
+            {
+                var appointmentList = _patientRepository.GetAppointmentsRepository(id);
+
+                if (appointmentList == null)
+                {
+                    return new List<AppointmentDto>();
+                }
+                else
+                {
+                    var appointmentsDto = new List<AppointmentDto>();
+                    appointmentList.ForEach(appointment =>
+                    {
+                        var appointmentDto = new AppointmentDto()
+                        {
+                            Id = appointment.Id,
+                            Name = appointment.Name,
+                            AppointmentCreationDate = appointment.AppointmentCreationDate,
+                            IsCompleted = appointment.IsCompleted,
+                            Price = appointment.Price,
+                            SpecialistComment = appointment.SpecialistComment
+                        };
+                        appointmentsDto.Add(appointmentDto);
+                    });
+                    return appointmentsDto;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentDto>();
+            }
+        }
+        public AppointmentDto GetAppointmentDto(int idPatient, int idAppointment)
+        {
+            try
+            {
+                var appointment = _patientRepository.GetAppointmentRepository(idPatient, idAppointment);
+
+                if (appointment == null)
+                {
+                    return new AppointmentDto();
+                }
+                else
+                {
+                    var appointmentDto = new AppointmentDto();
+
+                    appointmentDto.Id = appointment.Id;
+                    appointmentDto.Name = appointment.Name;
+                    appointmentDto.AppointmentCreationDate = appointment.AppointmentCreationDate;
+                    appointmentDto.IsCompleted = appointment.IsCompleted;
+                    appointmentDto.Price = appointment.Price;
+                    appointmentDto.SpecialistComment = appointment.SpecialistComment;
+                    //appointmentDto.SpecialistName = $"{appointment.Specialist.Name} {appointment.Specialist.LastName}";
+                    //appointmentDto.PatientName = $"{appointment.Patient.Name} {appointment.Patient.LastName}";
+                    return appointmentDto;
+                } 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentDto();
+            }
+        }
+
     }
 }

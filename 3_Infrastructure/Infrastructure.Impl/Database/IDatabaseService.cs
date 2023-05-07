@@ -19,10 +19,15 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data
         bool DeletePatientDb(int id);
 
         //Appointment
-        List<AppointmentRepositoryModel> GetAppointmentsDb();
-        bool AddAppointmentDb(AppointmentRepositoryModel appointment);
-        AppointmentRepositoryModel GetSingleAppointmentDb(int id);
-        AppointmentRepositoryModel UpdateAppointmentDb(int id, AppointmentRepositoryModel appointment);
-        bool DeleteAppointmentDb(int id);
+        bool AddAppointmentDb(int id, string speciality);
+        List<AppointmentRepositoryModel> GetAppointmentsPatientDb(int id);
+        AppointmentRepositoryModel GetSingleAppointmentPatientDb(int idPatient, int idAppointment);
+        
+        List<AppointmentRepositoryModel> GetAppointmentsSpecialistDb(int id);
+
+        bool DeleteAppointmentDb(int idSpecilaist, int idAppointment);
+
+        AppointmentRepositoryModel UpdateAppointmentDb(int idSpecialist, int idAppointment, AppointmentRepositoryModel appointment);
+
     }
 }
