@@ -3,6 +3,8 @@ using AA2ApiNET6._2_Domain.Infrastructure.Contracts.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Models;
 using AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper;
+using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
 {
@@ -98,7 +100,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             }
         }
 
-        public List<SpecialistBasicInfo> GetSpecialistBasicInfoList()
+        public List<SpecialistBasicInfo> GetSpecialistBasicInfoList(string param, string order)
         {
             try
             {
@@ -111,7 +113,28 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                 }
                 else
                 {
-                    return specialistsBasicInfo;
+                    if (param == null || order == null)
+                    {
+                        return specialistsBasicInfo;
+                    }
+                    var prop = typeof(SpecialistBasicInfo).GetProperty(param);
+                    if (prop == null) 
+                    {
+                        return specialistsBasicInfo;
+                    }
+                    else
+                    {
+                        if(order == "ASC")
+                        {
+                            var orderListASC = specialistsBasicInfo.OrderBy(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
+                            return orderListASC;
+                        }
+                        else
+                        {
+                            var orderListDESC = specialistsBasicInfo.OrderByDescending(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
+                            return orderListDESC;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -168,6 +191,91 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             });
             return specialistsBasicInfo;
         }
+
+        //Appointments
+        public List<AppointmentDto> GetAppointmentsDto(int id)
+        {
+            try
+            {
+                var appointmentList = _specialistRepository.GetAppointmentsRepository(id);
+
+                if (appointmentList == null)
+                {
+                    return new List<AppointmentDto>();
+                }
+                else
+                {
+                    var appointmentsDto = new List<AppointmentDto>();
+                    appointmentList.ForEach(appointment =>
+                    {
+                        var appointmentDto = new AppointmentDto()
+                        {
+                            Id = appointment.Id,
+                            Name = appointment.Name,
+                            AppointmentCreationDate = appointment.AppointmentCreationDate,
+                            IsCompleted = appointment.IsCompleted,
+                            Price = appointment.Price,
+                            SpecialistComment = appointment.SpecialistComment                          
+                        };
+                        appointmentsDto.Add(appointmentDto);
+                    });
+                    return appointmentsDto;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new List<AppointmentDto>();
+            }
+        }
+
+        public bool DeleteAppointment(int idSpecialist, int idAppointment)
+        {
+            try
+            {
+                bool appointmenttDeleted = _specialistRepository.DeleteAppointment(idSpecialist, idAppointment);
+                if (appointmenttDeleted == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return false;
+            }
+        }
+
+        public AppointmentDto UpdateAppointmentDto(int idSpecialist, int idAppointment, AppointmentDto appointmentDto)
+        {
+            try
+            {
+                var appointmentRepository = new AppointmentRepositoryModel();
+                appointmentRepository.Price = appointmentDto.Price;
+                appointmentRepository.SpecialistComment = appointmentDto.SpecialistComment;
+
+                var appointmentRepos = _specialistRepository.UpdateAppointment(idSpecialist, idAppointment, appointmentRepository);
+                var appointmentDtoChanged = _specialistRepositoryModelToDto.mapAppointmentRepositoryModelToDto(appointmentRepos);
+                if (appointmentDtoChanged.Id < 1)
+                {
+                    return new AppointmentDto();
+                }
+                else
+                {
+                    return appointmentDtoChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+                return new AppointmentDto();
+            }
+        }
+
     }
 }
 

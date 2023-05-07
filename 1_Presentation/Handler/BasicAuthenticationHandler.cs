@@ -37,19 +37,55 @@ namespace AA2ApiNET6._1_Presentation.Handler
                 string email = credentials[0];
                 var password = credentials[1];
 
-                var user = _dataContext.Specialists.Where(user => user.Email == email && user.Password == password).FirstOrDefault(); //BUSCAR EN EL DATACONETXT DE PACIENTES Y COMPARAR AMBOS
-                if (user == null) 
+                if(email == "admin@admin.com")
                 {
-                    return AuthenticateResult.Fail("Invalidad username or passoword");
-                }
-                else
-                {
-                    var claims = new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) };
-                    var identity = new ClaimsIdentity(claims, Scheme.Name);
-                    var principal = new ClaimsPrincipal(identity);
-                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                    var userAdmin = _dataContext.Specialists.Where(user => user.Email == email && user.Password == password).FirstOrDefault();
 
-                    return AuthenticateResult.Success(ticket);
+                    if (userAdmin == null)
+                    {
+                        return AuthenticateResult.Fail("Invalidad username or passoword");
+                    }
+                    else
+                    {
+                        var claims = new[] { new Claim(ClaimTypes.Name, userAdmin.Name.ToString()) };
+                        var identity = new ClaimsIdentity(claims, Scheme.Name);
+                        var principal = new ClaimsPrincipal(identity);
+                        var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                        return AuthenticateResult.Success(ticket);
+                    }
+                } else if(email.Contains("@specialist.com"))
+                {
+                    var specialist = _dataContext.Specialists.Where(user => user.Email == email && user.Password == password).FirstOrDefault(); //BUSCAR EN EL DATACONETXT DE PACIENTES Y COMPARAR AMBOS
+                    if (specialist == null)
+                    {
+                        return AuthenticateResult.Fail("Invalidad username or passoword");
+                    }
+                    else
+                    {
+                        var claims = new[] { new Claim(ClaimTypes.Name, specialist.Id.ToString()) };
+                        var identity = new ClaimsIdentity(claims, Scheme.Name);
+                        var principal = new ClaimsPrincipal(identity);
+                        var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                        return AuthenticateResult.Success(ticket);
+                    }
+                } else
+                {
+                    var user = _dataContext.Patients.Where(user => user.Email == email && user.Password == password).FirstOrDefault(); //BUSCAR EN EL DATACONETXT DE PACIENTES Y COMPARAR AMBOS
+                    if (user == null)
+                    {
+                        return AuthenticateResult.Fail("Invalidad username or passoword");
+                    }
+                    else
+                    {
+                        var claims = new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) };
+                        var identity = new ClaimsIdentity(claims, Scheme.Name);
+                        var principal = new ClaimsPrincipal(identity);
+                        var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                        return AuthenticateResult.Success(ticket);
+                    }
                 }
             }
             catch (Exception)

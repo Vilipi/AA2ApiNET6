@@ -6,7 +6,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Mapper
 {
     public interface ISpecialistRepositoryModelToDto
     {
-            SpecialistDto mapSpecialistRepositoryModelToDto(SpecialistRepositoryModel repositorymodel);
+            SpecialistDto mapSpecialistRepositoryModelToDto(SpecialistRepositoryModel specialist);
+            AppointmentDto mapAppointmentRepositoryModelToDto(AppointmentRepositoryModel Appointment);
     }
 }
-
