@@ -35,15 +35,15 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             _specialistInputToDto = specialistInputToDto;
         }
 
-        [HttpGet("Specialists/{param}/{order}")]
-        public ActionResult<List<SpecialistBasicInfo>> GetSpecialists(string? param, string? order)
+        [HttpGet("Specialists")]
+        public ActionResult<List<SpecialistBasicInfo>> GetSpecialists(string? name, string? speciality, string? order)
         {
             try
             {
-                List<SpecialistBasicInfo> specialists = _specialistService.GetSpecialistBasicInfoList(param, order);
+                _logger.LogWarning("Method GetSpecialists invoked.");
+                List<SpecialistBasicInfo> specialists = _specialistService.GetSpecialistBasicInfoList(name, speciality, order);
                 if (specialists.Count > 0)
                 {
-                    _logger.LogWarning("Method GetSpecialists invoked.");
                     return Ok(specialists);
                 }
                 else
@@ -64,6 +64,8 @@ namespace AA2ApiNET6._1_Presentation.Controllers
         {
             try
             {
+                _logger.LogWarning("Method Specialist invoked.");
+
                 string specialistdValidated = HttpContext.User.Identity.Name;
                 int intSpecialistValidated = 0;
                 if (specialistdValidated != "admin")
@@ -101,6 +103,7 @@ namespace AA2ApiNET6._1_Presentation.Controllers
             try
             {
                 _logger.LogWarning($"Method AddSpecialist invoked.");
+
                 var specialistDto = _specialistInputToDto.mapSpecialistInputToDto(specialistInput);
                 bool SpecialistStatus = _specialistService.AddSpecialistDto(specialistDto);
                 if (SpecialistStatus)

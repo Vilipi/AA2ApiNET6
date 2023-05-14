@@ -58,11 +58,11 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl
             }
         }
 
-        public List<SpecialistRepositoryModel> GetSpecialists()
+        public List<SpecialistRepositoryModel> GetSpecialists(string? name, string? speciality, string? order)
         {
             try
             {
-                var dbresponse = _dataBaseService.GetSPecialistsDb();
+                var dbresponse = _dataBaseService.GetSPecialistsDb(name, speciality, order);
 
                 if (dbresponse.Count == 0)
                 {
