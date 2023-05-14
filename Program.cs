@@ -31,6 +31,8 @@ builder.Services.AddScoped<IPatientInputToDto, PatientInputToDto>();
 builder.Services.AddScoped<ISpecialistRepositoryModelToDto, SpecialistRepositoryModelToDto>();
 builder.Services.AddScoped<IPatientRepositoryModelToDto, PatientRepositoryModelToDto>();
 
+//Application Insights
+builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -61,9 +63,6 @@ builder.Services.AddSwaggerGen(c =>
                 }
             });
 });
-
-//Application Insights
-builder.Services.AddApplicationInsightsTelemetry();
 
 //AUTH
 builder.Services.AddAuthentication("BasicAuthentication")
