@@ -1,5 +1,6 @@
 ﻿using AA2ApiNET6._2_Domain.Infrastructure.Contracts.Models;
 using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data;
+using System.Linq;
 
 namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
 {
@@ -23,8 +24,13 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             {
                 var existingSpecialist = _dataContext.Specialists.Where(x => x.Id == specialist.Id).FirstOrDefault();
                 var existingSpecialistEmail = _dataContext.Specialists.Where(x => x.Email == specialist.Email).FirstOrDefault();
+                var corrrectEmail = specialist.Email.Contains("@specialist.com");
 
                 if (existingSpecialist != null || existingSpecialistEmail != null)
+                {
+                    return false;
+                }
+                else if (!corrrectEmail)
                 {
                     return false;
                 }
@@ -86,11 +92,33 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             }
         }
 
-        public List<SpecialistRepositoryModel> GetSPecialistsDb()
+        public List<SpecialistRepositoryModel> GetSPecialistsDb(string? name, string? speciality, string? order)
         {
             try
             {
-                return _dataContext.Specialists.ToList();
+                //return _dataContext.Specialists.ToList();
+                IQueryable<SpecialistRepositoryModel> query = _dataContext.Specialists.AsQueryable();
+                if (name != null)
+                {
+                    query = query.Where(e => e.Name.Contains(name));
+                }
+
+                if (speciality != null)
+                {
+                    query = query.Where(e => e.Speciality.Contains(speciality));
+                }
+
+                if(order == "DESC")
+                {
+                    query = query.OrderByDescending(i => i);
+                }
+
+                if(order == "ASC")
+                {
+                    query = query.OrderBy(i => i);
+
+                }
+                return query.ToList();
             }
             catch (Exception ex)
             {
@@ -141,12 +169,16 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             {
                 var existingPatient = _dataContext.Patients.Where(x => x.Id == patient.Id).FirstOrDefault();
                 var existingPatientEmail = _dataContext.Patients.Where(x => x.Email == patient.Email).FirstOrDefault();
+                var incorrrectEmail = patient.Email.Contains("@specialist.com");
 
                 if (existingPatient != null || existingPatientEmail != null)
                 {
                     return false;
                 }
-                else
+                else if(incorrrectEmail)
+                {
+                    return false;
+                }
                 {
                     patient.isActive = true;
                     _dataContext.Patients.Add(patient);
@@ -220,8 +252,13 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
             {
                 PatientRepositoryModel updatePatientRepository = _dataContext.Patients?.Where(e => e.Id == id).FirstOrDefault();
                 PatientRepositoryModel updatePatientRepositoryEmail = _dataContext.Patients?.Where(e => e.Email == patient.Email).FirstOrDefault();
+                var incorrrectEmail = patient.Email.Contains("@specialist.com");
 
                 if (updatePatientRepository.Id == null || updatePatientRepositoryEmail != null && updatePatientRepositoryEmail.Id != updatePatientRepository.Id)
+                {
+                    return new PatientRepositoryModel();
+                }
+                else if (incorrrectEmail)
                 {
                     return new PatientRepositoryModel();
                 }
@@ -249,11 +286,11 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
 
         
         //Appointment
-        public bool AddAppointmentDb(int id, string specility)
+        public bool AddAppointmentDb(int id, string speciality)
         {
             try
             {
-                var existingSpecility = _dataContext.Specialists?.Where(x => x.Speciality == specility).FirstOrDefault();
+                var existingSpecility = _dataContext.Specialists?.Where(x => x.Speciality == speciality).FirstOrDefault();
                 var singlePatientRepository = _dataContext.Patients?.Where(e => e.Id == id).FirstOrDefault();
 
                 if (existingSpecility == null || existingSpecility.Name == "admin" && singlePatientRepository == null)
@@ -263,7 +300,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database
                 else
                 {
                     var newAppointment = new AppointmentRepositoryModel();
-                    newAppointment.Name = $"Appointment-{specility}-{DateTime.Now.ToString("dd/MM/yy")}";
+                    newAppointment.Name = $"Appointment-{speciality}-{DateTime.Now.ToString("dd/MM/yy")}";
                     newAppointment.AppointmentCreationDate = DateTime.Now;
                     newAppointment.IsCompleted = false;
                     newAppointment.Price = 50; //inicial

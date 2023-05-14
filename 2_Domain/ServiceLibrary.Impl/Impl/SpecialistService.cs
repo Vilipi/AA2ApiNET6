@@ -100,11 +100,11 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
             }
         }
 
-        public List<SpecialistBasicInfo> GetSpecialistBasicInfoList(string param, string order)
+        public List<SpecialistBasicInfo> GetSpecialistBasicInfoList(string? name, string? speciality, string? order)
         {
             try
             {
-                List<SpecialistRepositoryModel> specialistsRepository = _specialistRepository.GetSpecialists();
+                List<SpecialistRepositoryModel> specialistsRepository = _specialistRepository.GetSpecialists(name, speciality, order);
                 List<SpecialistBasicInfo> specialistsBasicInfo = MapSpecialistsRepositoryToSpecialistsBasicInfoList(specialistsRepository);
                 if (specialistsBasicInfo.Count == 0)
                 {
@@ -113,28 +113,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Impl.Impl
                 }
                 else
                 {
-                    if (param == null || order == null)
-                    {
-                        return specialistsBasicInfo;
-                    }
-                    var prop = typeof(SpecialistBasicInfo).GetProperty(param);
-                    if (prop == null) 
-                    {
-                        return specialistsBasicInfo;
-                    }
-                    else
-                    {
-                        if(order == "ASC")
-                        {
-                            var orderListASC = specialistsBasicInfo.OrderBy(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
-                            return orderListASC;
-                        }
-                        else
-                        {
-                            var orderListDESC = specialistsBasicInfo.OrderByDescending(x => x.GetType().GetProperty(param).GetValue(x, null)).ToList();
-                            return orderListDESC;
-                        }
-                    }
+                    return specialistsBasicInfo;
                 }
             }
             catch (Exception ex)

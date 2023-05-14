@@ -5,7 +5,7 @@ namespace AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Data
     public interface IDataBaseService
     {
         //Specialist
-        List<SpecialistRepositoryModel> GetSPecialistsDb();
+        List<SpecialistRepositoryModel> GetSPecialistsDb(string? name, string? speciality, string? order);
         bool AddSpecialistDb(SpecialistRepositoryModel specialist);
         SpecialistRepositoryModel GetSingleSpecialistDb(int id);
         SpecialistRepositoryModel UpdateSpecialistDb(int id, SpecialistRepositoryModel specialist);

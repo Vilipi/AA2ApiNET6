@@ -4,7 +4,7 @@ namespace AA2ApiNET6._2_Domain.Infrastructure.Contracts.Contracts
 {
     public interface ISpecialistRepository
     {
-        List<SpecialistRepositoryModel> GetSpecialists();
+        List<SpecialistRepositoryModel> GetSpecialists(string? name, string? speciality, string? order);
         bool AddSpecialist(SpecialistRepositoryModel specialist);
         SpecialistRepositoryModel GetSingleSpecialist(int id);
         bool DeleteSpecialist(int id);

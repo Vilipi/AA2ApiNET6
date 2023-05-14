@@ -7,7 +7,7 @@ namespace AA2ApiNET6._2_Domain.ServiceLibrary.Contracts.Contracts
         bool AddSpecialistDto(SpecialistDto specialistDto);
         bool DeleteSpecialistDto(int id);
         SpecialistDto GetSpecialistDto(int id);
-        List<SpecialistBasicInfo> GetSpecialistBasicInfoList(string param, string order);
+        List<SpecialistBasicInfo> GetSpecialistBasicInfoList(string? name, string? speciality, string? order);
         SpecialistDto UpdateSpecialistDto(int id, SpecialistDto specialistDto);
 
         //Appointments
