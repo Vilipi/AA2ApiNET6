@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 //Application Insights
-//builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddApplicationInsightsTelemetry();
 
 //AUTH
 builder.Services.AddAuthentication("BasicAuthentication")
