@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AA2ApiNET6.Migrations
 {
-    public partial class migration1 : Migration
+    public partial class mirgation2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

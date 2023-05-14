@@ -10,6 +10,7 @@ using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Database;
 using AA2ApiNET6._3_Infrastructure.Infrastructure.Impl.Impl;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -61,6 +62,9 @@ builder.Services.AddSwaggerGen(c =>
             });
 });
 
+//Application Insights
+//builder.Services.AddApplicationInsightsTelemetry();
+
 //AUTH
 builder.Services.AddAuthentication("BasicAuthentication")
     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
@@ -93,6 +97,13 @@ app.UseAuthentication(); // AUTH
 app.UseAuthorization();
 
 app.MapControllers();
+
+//CORS
+app.UseCors(options => {
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+    options.AllowAnyOrigin();
+});
 
 using (var scope = app.Services.CreateScope())
 {

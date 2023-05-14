@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AA2ApiNET6.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230503182410_migration1")]
-    partial class migration1
+    [Migration("20230514152347_mirgation2")]
+    partial class mirgation2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
